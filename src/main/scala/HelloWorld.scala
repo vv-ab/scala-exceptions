@@ -3,10 +3,10 @@ import scala.io.Source
 import java.nio.file.{Files, Paths}
 import java.nio.charset.StandardCharsets
 
-
+@main
 def main(): Unit = {
 
-  val result: Either[String, Unit] = copyFile()
+  val result: Either[String, Unit] = copyFile("example.txt")
 
   result match {
     case Left(message) =>
@@ -14,15 +14,20 @@ def main(): Unit = {
     case Right(value) =>
       println("Successfully copied file")
   }
+
+  copyFile("blub.txt") match
+    case Left(value) =>
+      println("failed to copy blub.txt")
+    case Right(value) =>
+      println("Successfully copied file")
 }
 
-def copyFile(): Either[String, Unit] = {
+def copyFile(sourceFile: String): Either[String, Unit] = {
 
   try {
-    val source = Source.fromFile("exampleasd.txt")
+    val source = Source.fromFile(sourceFile)
     val lines = source.mkString
     source.close()
-    println(lines)
     Files.write(Paths.get("file.text"), lines.getBytes(StandardCharsets.UTF_8))
     Right(())
   }
@@ -30,3 +35,4 @@ def copyFile(): Either[String, Unit] = {
     case _: FileNotFoundException => Left("didn't find anything")
   }
 }
+
